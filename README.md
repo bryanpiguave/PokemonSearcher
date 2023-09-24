@@ -9,12 +9,12 @@ webpage
 
 You need to install the following packages to make it work 
 
-shiny
-shinyWidgets
-httr
-jsonlite
-png
-ggplot2
+- shiny
+- shinyWidgets
+- httr
+- jsonlite
+- png
+- ggplot2
 
 
 # Autor
