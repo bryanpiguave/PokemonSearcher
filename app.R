@@ -3,6 +3,7 @@ library(shinyWidgets)
 library(httr)
 library(jsonlite)
 library(png)
+library(ggplot2)
 
 df =read.csv(file="pokemon.csv")
 pokemon_list=df$Name
@@ -54,9 +55,17 @@ server <- function(input,output){
     pokemon_name = input$pokemon_choice
     title_name=paste("Stats of",pokemon_name) 
     
-    barplot(data$stats$base_stat, main=title_name,
-            xlab="Pokemon Statistics",legend=TRUE,horiz = FALSE,
-            names.arg=data$stats$stat$name,col="#005bd0")
+    print(data$stats$base_stats)
+    
+    ggplot2::ggplot() + ggplot2::geom_bar(mapping = aes(x=data$stats$stat$name,
+                                                        y=data$stats$base_stat),
+                                          stat = "identity",color="blue",
+                                          fill="#005bd0"
+                                          )+
+      ggplot2::ggtitle(title_name)+
+      ggplot2::xlab("Pokemon Statistics")+
+      ggplot2::ylab("Score")
+
   })
   output$height = renderText({
     request_url = paste("https://pokeapi.co/api/v2/pokemon/",
