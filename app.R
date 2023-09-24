@@ -4,9 +4,11 @@ library(httr)
 library(jsonlite)
 library(png)
 library(ggplot2)
+library
 
 df =read.csv(file="pokemon.csv")
 pokemon_list=df$Name
+df = df[,2:10]
 
 ui <-fluidPage(
               setBackgroundImage(src = "https://assets.pokemon.com//assets/cms2/img/misc/virtual-backgrounds/masters/city.jpg", 
@@ -25,7 +27,12 @@ ui <-fluidPage(
                    
                  ),
                mainPanel(
-                 plotOutput(outputId = "stats")
+                 tabsetPanel(
+                   tabPanel("Plot",plotOutput(outputId = "stats")),
+                   tabPanel("Dataset",dataTableOutput("dataset"),
+                            tags$head(tags$style("#dataset table {background-color: white; }", media="screen", type="text/css"))
+                   )
+                 )
                  
                  
                ))
@@ -76,6 +83,21 @@ server <- function(input,output){
     info = c("Height :",data$height,"\n","Weight: ",data$weight)
     
     paste(info,collapse = " ")})
+  
+    
+
+  output$dataset <- renderDataTable({
+    request_url = paste("https://pokeapi.co/api/v2/pokemon/",
+                        tolower(input$pokemon_choice),sep = "")
+    res = GET(request_url)
+    data= fromJSON(rawToChar(res$content))
+    
+    bg_color <- c("#FFD700", "#00FF00")
+    table = data.frame(df)
+    
+    return (table)
+    })
+  
   
 }
 
